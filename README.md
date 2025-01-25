@@ -14,7 +14,7 @@
 - Appwrite
 - Tailwind CSS
 
-## <a name="features">🔋 Features</a>
+## <a name="features">🚀 Features</a>
 
 - Browse and Search for movies from TMDB API.
 - Displays trending movies based on a dynamic user search algorithm.
