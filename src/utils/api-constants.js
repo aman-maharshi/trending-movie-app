@@ -10,3 +10,5 @@ export const API_OPTIONS = {
     Authorization: `Bearer ${API_KEY}`
   }
 }
+
+export const OMDB_BASE_URL = `https://www.omdbapi.com/?apikey=${import.meta.env.VITE_OMDB_API_KEY}`
