@@ -3,17 +3,22 @@ import Search from './components/Search'
 import Spinner from './components/Spinner'
 import { API_BASE_URL, API_OPTIONS, OMDB_BASE_URL } from './utils/api-constants'
 import Movie from './components/Movie'
+import { useDebounce } from "react-use"
 
 const App = () => {
   const [searchText, setSearchText] = useState("")
+  const [debouncedSearchText, setDebouncedSearchText] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
   const [loading, setLoading] = useState(false)
   const [movies, setMovies] = useState([])
 
-  useEffect(() => {
-    // getMovies(searchText)
-  }, [searchText])
+  useDebounce(() => {
+    setDebouncedSearchText(searchText)
+  }, 500, [searchText])
 
+  // useEffect(() => {
+  //   getMovies(searchText)
+  // }, [searchText])
 
   // const getMovies = async (query = '') => {
   //   setLoading(true)
@@ -44,17 +49,21 @@ const App = () => {
   // }
 
   useEffect(() => {
-    getData(searchText)
-  }, [searchText])
+    getData(debouncedSearchText)
+  }, [debouncedSearchText])
 
   const getRandomWord = () => {
-    const words = ["beautiful", "amazing", "wonderful", "fantastic", "incredible", "summer", "home", "winter", "love"]
-    return words[Math.floor(Math.random() * words.length)]
+    const movieTitleWords = [
+      "big", "dark", "good", "bad", "great", "little", "new", "dead", "beautiful",
+      "man", "woman", "love", "life", "world", "night", "day", "war", "home",
+      "king", "girl", "boy", "city", "heart", "story"
+    ]
+    return movieTitleWords[Math.floor(Math.random() * movieTitleWords.length)]
   }
 
-  const getData = async (searchText) => {
+  const getData = async (text) => {
     setLoading(true)
-    const query = searchText || getRandomWord()
+    const query = text || getRandomWord()
     try {
       const response = await fetch(`${OMDB_BASE_URL}&s=${query}&page=1`)
       if (response.ok) {
@@ -74,7 +83,6 @@ const App = () => {
     } finally {
       setLoading(false)
     }
-
   }
 
   return (
@@ -93,7 +101,7 @@ const App = () => {
         </header>
 
         <section className='all-movies'>
-          <h2>All Movies</h2>
+          <h2 className='max-md:mt-4 mt-8'>All Movies</h2>
 
           {loading ? (
             <Spinner />

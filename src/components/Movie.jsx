@@ -19,9 +19,9 @@ const Movie = ({ data }) => {
             
           </div>
 
-          <span>•</span>
+          {/* <span>•</span> */}
           {/* <p className="lang">{original_language}</p> */}
-          <p className="lang">En</p>
+          {/* <p className="lang">En</p> */}
 
           <span>•</span>
           {/* <p className="year">
