@@ -4,6 +4,7 @@ import Spinner from './components/Spinner'
 import { API_BASE_URL, API_OPTIONS, OMDB_BASE_URL } from './utils/api-constants'
 import Movie from './components/Movie'
 import { useDebounce } from "react-use"
+import { updateSearchCount } from './appwrite'
 
 const App = () => {
   const [searchText, setSearchText] = useState("")
@@ -14,39 +15,7 @@ const App = () => {
 
   useDebounce(() => {
     setDebouncedSearchText(searchText)
-  }, 500, [searchText])
-
-  // useEffect(() => {
-  //   getMovies(searchText)
-  // }, [searchText])
-
-  // const getMovies = async (query = '') => {
-  //   setLoading(true)
-  //   setErrorMessage("")
-
-  //   try {
-  //     const endpoint = `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`
-  //     const response = await fetch(endpoint, API_OPTIONS)
-
-  //     if (!response.ok) throw new Error("Failed to fetch movies")
-
-  //     const data = await response.json()
-
-  //     if (data.response === 'False') {
-  //       setErrorMessage(data.Error || "Failed to fetch movies")
-  //       setMovies([])
-  //       return
-  //     }
-
-  //     setMovies(data.results || [])
-
-  //   } catch (error) {
-  //     console.error("Error fetching movies: ", error)
-  //     setErrorMessage("Error fetching movies. Please try again later.")
-  //   } finally {
-  //     setLoading(false)
-  //   }
-  // }
+  }, 700, [searchText])
 
   useEffect(() => {
     getData(debouncedSearchText)
@@ -73,9 +42,14 @@ const App = () => {
           setMovies([])
           return
         }
-        // console.log(data)
+        console.log(data)
         setErrorMessage("")
         setMovies(data.Search)
+
+        // pushing the first search result to Appwrite
+        if (text && data.Search.length > 0) {
+          await updateSearchCount(text, data.Search[0])
+        }
       }
     } catch (error) {
       console.log(error)
@@ -91,7 +65,7 @@ const App = () => {
 
       <div className="wrapper">
         <header>
-          <img src="./hero.png" alt="Hero Banner" />
+          {/* <img src="./hero.png" alt="Hero Banner" /> */}
           <h1>Find <span className="text-gradient">Movies</span> You'll Enjoy Without the Hassle</h1>
 
           <Search
@@ -112,10 +86,7 @@ const App = () => {
               {movies.map((movie, index) => <Movie key={index} data={movie} />)}
             </ul>
           )}
-
         </section>
-
-
       </div>
     </main>
   )
