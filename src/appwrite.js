@@ -24,7 +24,8 @@ export const updateSearchCount = async (searchTerm, movie) => {
       await database.updateDocument(DATABASE_ID, COLLECTION_ID, doc.$id, {
         count: doc.count + 1
       })
-      // if it doesn't, create a new record and set the count to 1
+      
+    // if it doesn't, create a new record and set the count to 1
     } else {
       await database.createDocument(DATABASE_ID, COLLECTION_ID, ID.unique(), {
         searchTerm,

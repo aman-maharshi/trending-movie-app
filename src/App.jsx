@@ -42,7 +42,7 @@ const App = () => {
           setMovies([])
           return
         }
-        console.log(data)
+        // console.log(data)
         setErrorMessage("")
         setMovies(data.Search)
 
