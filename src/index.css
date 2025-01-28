@@ -28,7 +28,7 @@
   }
 
   h1 {
-    @apply mx-auto max-w-4xl text-center sm:text-[64px] text-5xl font-bold leading-tight tracking-[-1%] text-white sm:leading-[76px];
+    @apply mx-auto max-w-4xl text-center text-3xl sm:text-[40px] md:text-[50px] font-bold text-white;
   }
 
   h2 {
