@@ -5,6 +5,7 @@ import { OMDB_BASE_URL } from './utils/api-constants'
 import Movie from './components/Movie'
 import { useDebounce } from "react-use"
 import { getTrendingMovies, updateSearchCount } from './appwrite'
+import { AllMovieLoader, TrendingMovieLoader } from './components/Loader'
 
 const App = () => {
   const [searchText, setSearchText] = useState("")
@@ -87,7 +88,6 @@ const App = () => {
     }
   }
 
-
   return (
     <main>
       <div className="pattern" />
@@ -108,7 +108,7 @@ const App = () => {
             <h2>Trending Movies</h2>
 
             {loadingTrendingMovies ? (
-              <Spinner />
+              <TrendingMovieLoader />
             ) : errorMessage ? (
               <p className="text-red-500">{errorTrendingMovies}</p>
             ) : (
@@ -124,11 +124,11 @@ const App = () => {
           </section>
         )}
 
-        <section className='all-movies'>
+        <section className={`all-movies ${debouncedSearchText === "" ? "" : "mt-8"}`}>
           <h2>All Movies</h2>
 
           {loading ? (
-            <Spinner />
+            <AllMovieLoader />
           ) : errorMessage ? (
             <p className="text-red-500">{errorMessage}</p>
           ) : (
@@ -143,3 +143,10 @@ const App = () => {
 }
 
 export default App
+
+/*
+ TODO:
+ - Add User Search Query to URL
+ - Single Movie Page
+ - Paginated Results
+ */
