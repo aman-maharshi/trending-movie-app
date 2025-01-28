@@ -16,6 +16,6 @@
 
 ## <a name="features">🚀 Features</a>
 
-- Browse and Search for movies from TMDB API.
+- Browse and Search for movies from OMDB API.
 - Displays trending movies based on a dynamic user search algorithm.
 
