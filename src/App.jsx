@@ -9,7 +9,6 @@ import Pagination from "./components/Pagination"
 
 const App = () => {
   const [searchText, setSearchText] = useState("")
-  const [debouncedSearchText, setDebouncedSearchText] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
   const [loading, setLoading] = useState(false)
   const [movies, setMovies] = useState([])
@@ -46,22 +45,22 @@ const App = () => {
     }
   }, [])
 
-  // Initialize search from URL params
+  // Initialize search from URL params and load initial data
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search)
     const searchParam = urlParams.get("search")
+
     if (searchParam && searchParam.trim() !== "") {
       setSearchText(searchParam)
-      setDebouncedSearchText(searchParam)
+      getData(searchParam)
     } else {
-      // Only call getData with random word if no search param in URL
       getData("")
     }
   }, [])
 
+  // Debounced search effect
   useDebounce(
     () => {
-      setDebouncedSearchText(searchText)
       // Update URL with search query
       const url = new URL(window.location)
       if (searchText) {
@@ -70,14 +69,13 @@ const App = () => {
         url.searchParams.delete("search")
       }
       window.history.replaceState({}, "", url)
+
+      // Fetch data based on search text
+      getData(searchText)
     },
     700,
     [searchText]
   )
-
-  useEffect(() => {
-    getData(debouncedSearchText)
-  }, [debouncedSearchText])
 
   const getRandomWord = () => {
     const movieTitleWords = [
@@ -113,6 +111,7 @@ const App = () => {
     setLoading(true)
     // Only use random word if there's no search text
     const query = text && text.trim() !== "" ? text : getRandomWord()
+
     try {
       const response = await fetch(`${OMDB_BASE_URL}&s=${query}&page=${page}`)
       if (response.ok) {
@@ -158,7 +157,7 @@ const App = () => {
       if (!loading && hasMorePages) {
         const nextPage = currentPage + 1
         setCurrentPage(nextPage)
-        getData(debouncedSearchText, nextPage)
+        getData(searchText, nextPage)
       }
     } catch (error) {
       console.error("Error loading more movies:", error)
@@ -170,8 +169,7 @@ const App = () => {
   useEffect(() => {
     setCurrentPage(1)
     setMovies([])
-    getData(debouncedSearchText, 1)
-  }, [debouncedSearchText])
+  }, [searchText])
 
   /*
     TRENDING MOVIES
@@ -255,7 +253,7 @@ const App = () => {
           <Search searchText={searchText} setSearchText={setSearchText} />
         </header>
 
-        {debouncedSearchText === "" && (
+        {searchText === "" && (
           <section className="trending">
             <h2>Trending Movies</h2>
 
@@ -276,7 +274,7 @@ const App = () => {
           </section>
         )}
 
-        <section className={`all-movies ${debouncedSearchText === "" ? "" : "mt-8"}`}>
+        <section className={`all-movies ${searchText === "" ? "" : "mt-8"}`}>
           <h2>All Movies</h2>
 
           {loading && movies.length === 0 ? (
