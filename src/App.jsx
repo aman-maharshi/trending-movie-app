@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react"
 import Search from "./components/Search"
-import Spinner from "./components/Spinner"
 import { OMDB_BASE_URL } from "./utils/api-constants"
 import Movie from "./components/Movie"
 import { useDebounce } from "react-use"
 import { getTrendingMovies, updateSearchCount } from "./appwrite"
 import { AllMovieLoader, TrendingMovieLoader } from "./components/Loader"
 import Pagination from "./components/Pagination"
-import MovieDetail from "./components/MovieDetail"
 
 const App = () => {
   const [searchText, setSearchText] = useState("")
@@ -18,8 +16,6 @@ const App = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalResults, setTotalResults] = useState(0)
   const [hasMorePages, setHasMorePages] = useState(false)
-  const [selectedMovie, setSelectedMovie] = useState(null)
-  const [isDetailOpen, setIsDetailOpen] = useState(false)
   const [globalError, setGlobalError] = useState(null)
 
   // Simple error handler for the entire app
@@ -204,24 +200,16 @@ const App = () => {
 
   const handleMovieClick = movie => {
     try {
-      if (!movie || !movie.Title) {
-        console.warn("Invalid movie data:", movie)
+      if (!movie || !movie.imdbID) {
+        console.warn("Invalid movie data or missing IMDB ID:", movie)
         return
       }
-      setSelectedMovie(movie)
-      setIsDetailOpen(true)
+      // Open IMDB page in new tab
+      const imdbUrl = `https://www.imdb.com/title/${movie.imdbID}/`
+      window.open(imdbUrl, "_blank")
     } catch (error) {
-      console.error("Error opening movie details:", error)
-      setErrorMessage("Failed to open movie details")
-    }
-  }
-
-  const closeMovieDetail = () => {
-    try {
-      setIsDetailOpen(false)
-      setSelectedMovie(null)
-    } catch (error) {
-      console.error("Error closing movie details:", error)
+      console.error("Error opening IMDB page:", error)
+      setErrorMessage("Failed to open IMDB page")
     }
   }
 
@@ -310,8 +298,6 @@ const App = () => {
           )}
         </section>
       </div>
-
-      <MovieDetail movie={selectedMovie} isOpen={isDetailOpen} onClose={closeMovieDetail} />
     </main>
   )
 }
