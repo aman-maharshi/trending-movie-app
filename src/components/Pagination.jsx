@@ -4,19 +4,20 @@ const Pagination = ({ hasMorePages, loading, onLoadMore, totalResults, currentCo
   if (!hasMorePages) return null
 
   return (
-    <div className="flex justify-center mt-8">
-      <button
-        onClick={onLoadMore}
-        disabled={loading}
-        className="bg-gradient-to-r from-[#D6C7FF] to-[#AB8BFF] text-primary font-bold py-3 px-6 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
-      >
+    <div className="flex justify-center mt-12">
+      <button onClick={onLoadMore} disabled={loading} className="pagination-button">
         {loading ? (
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-            Loading...
+          <div className="flex items-center gap-3">
+            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            <span>Loading more movies...</span>
           </div>
         ) : (
-          `Load More (${currentCount}/${totalResults})`
+          <div className="flex items-center gap-3">
+            <span>Load More Movies</span>
+            <div className="bg-white/20 px-3 py-1 rounded-lg text-sm font-medium">
+              {currentCount} / {totalResults}
+            </div>
+          </div>
         )}
       </button>
     </div>

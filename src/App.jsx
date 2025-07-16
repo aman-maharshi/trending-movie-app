@@ -219,20 +219,30 @@ const App = () => {
     <main>
       {/* Global Error Overlay */}
       {globalError && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-          <div className="bg-dark-100 rounded-2xl p-6 max-w-md w-full text-center">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-gradient-to-br from-dark-200/95 to-dark-100/95 backdrop-blur-xl border border-white/10 rounded-2xl p-8 max-w-md w-full text-center shadow-2xl">
+            <div className="w-16 h-16 bg-red-500/20 rounded-full mx-auto mb-6 flex items-center justify-center">
+              <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                />
+              </svg>
+            </div>
             <h2 className="text-xl font-bold text-white mb-4">Oops! Something went wrong</h2>
-            <p className="text-gray-400 mb-6">{globalError}</p>
+            <p className="text-gray-400 mb-8 leading-relaxed">{globalError}</p>
             <div className="flex gap-3 justify-center">
               <button
                 onClick={clearGlobalError}
-                className="bg-gray-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors"
+                className="bg-gray-600/50 text-white font-semibold py-3 px-6 rounded-xl hover:bg-gray-600 transition-all duration-200 border border-gray-500/30"
               >
                 Try Again
               </button>
               <button
                 onClick={() => window.location.reload()}
-                className="bg-gradient-to-r from-[#D6C7FF] to-[#AB8BFF] text-primary font-bold py-2 px-4 rounded-lg hover:opacity-90 transition-opacity"
+                className="bg-gradient-to-r from-accent to-accent-light text-white font-semibold py-3 px-6 rounded-xl hover:shadow-lg transition-all duration-200 transform hover:scale-105"
               >
                 Refresh Page
               </button>
@@ -245,42 +255,67 @@ const App = () => {
 
       <div className="wrapper">
         <header>
-          {/* <img src="./hero.png" alt="Hero Banner" /> */}
           <h1>
             Find <span className="text-gradient">Movies & TV Shows</span> You'll Enjoy Without the Hassle
           </h1>
+          <p className="text-center text-gray-400 text-lg mt-6 max-w-2xl mx-auto leading-relaxed">
+            Discover your next favorite entertainment with our powerful search engine and trending recommendations
+          </p>
 
           <Search searchText={searchText} setSearchText={setSearchText} />
         </header>
 
         {searchText === "" && (
-          <section className="trending">
-            <h2>Trending Movies</h2>
+          <>
+            <section className="trending">
+              <h2>Trending Movies</h2>
 
-            {loadingTrendingMovies ? (
-              <TrendingMovieLoader />
-            ) : errorMessage ? (
-              <p className="text-red-500">{errorTrendingMovies}</p>
-            ) : (
-              <ul>
-                {trendingMovies.map((movie, index) => (
-                  <li key={movie.$id}>
-                    <p>{index + 1}</p>
-                    <img src={movie.imageUrl} alt={movie.searchTerm} />
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
+              {loadingTrendingMovies ? (
+                <TrendingMovieLoader />
+              ) : errorTrendingMovies ? (
+                <div className="error-message">
+                  <p>{errorTrendingMovies}</p>
+                </div>
+              ) : (
+                <ul>
+                  {trendingMovies.map((movie, index) => (
+                    <li key={movie.$id} className="cursor-pointer" onClick={() => handleMovieClick(movie)}>
+                      <p>{index + 1}</p>
+                      <img src={movie.imageUrl} alt={movie.searchTerm} />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+
+            <div className="section-divider" />
+          </>
         )}
 
         <section className={`all-movies ${searchText === "" ? "" : "mt-8"}`}>
-          <h2>All Movies</h2>
+          <h2>{searchText ? `Search Results for "${searchText}"` : " All Movies"}</h2>
 
           {loading && movies.length === 0 ? (
             <AllMovieLoader />
           ) : errorMessage ? (
-            <p className="text-red-500">{errorMessage}</p>
+            <div className="error-message">
+              <p>{errorMessage}</p>
+            </div>
+          ) : movies.length === 0 && searchText ? (
+            <div className="text-center py-16">
+              <div className="w-24 h-24 bg-gray-700/50 rounded-full mx-auto mb-6 flex items-center justify-center">
+                <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">No movies found</h3>
+              <p className="text-gray-400">Try adjusting your search terms or browse trending movies above</p>
+            </div>
           ) : (
             <>
               <ul>
