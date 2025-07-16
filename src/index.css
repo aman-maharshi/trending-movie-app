@@ -90,7 +90,8 @@
     }
 
     & ul li {
-      @apply min-w-[280px] flex flex-row items-center gap-4 scroll-snap-start;
+      @apply min-w-[280px] flex flex-row items-center gap-4;
+      scroll-snap-align: start;
       background: linear-gradient(135deg, rgba(15, 13, 35, 0.8) 0%, rgba(26, 26, 46, 0.8) 100%);
       backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.1);
