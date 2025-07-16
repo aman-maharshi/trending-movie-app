@@ -50,9 +50,12 @@ const App = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search)
     const searchParam = urlParams.get("search")
-    if (searchParam) {
+    if (searchParam && searchParam.trim() !== "") {
       setSearchText(searchParam)
       setDebouncedSearchText(searchParam)
+    } else {
+      // Only call getData with random word if no search param in URL
+      getData("")
     }
   }, [])
 
@@ -108,7 +111,8 @@ const App = () => {
 
   const getData = async (text, page = 1) => {
     setLoading(true)
-    const query = text || getRandomWord()
+    // Only use random word if there's no search text
+    const query = text && text.trim() !== "" ? text : getRandomWord()
     try {
       const response = await fetch(`${OMDB_BASE_URL}&s=${query}&page=${page}`)
       if (response.ok) {
