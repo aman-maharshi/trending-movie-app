@@ -1,21 +1,16 @@
-import { Client, Databases, ID, Query } from 'appwrite';
+import { Client, Databases, ID, Query } from "appwrite"
 
 const PROJECT_ID = import.meta.env.VITE_APPWRITE_PROJECT_ID
 const DATABASE_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID
 const COLLECTION_ID = import.meta.env.VITE_APPWRITE_COLLECTION_ID
 
-const client = new Client()
-  .setEndpoint("https://cloud.appwrite.io/v1")
-  .setProject(PROJECT_ID)
+const client = new Client().setEndpoint("https://cloud.appwrite.io/v1").setProject(PROJECT_ID)
 
 const database = new Databases(client)
 
-
 export const updateSearchCount = async (searchTerm, movie) => {
   try {
-    const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
-      Query.equal('searchTerm', searchTerm),
-    ])
+    const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [Query.equal("searchTerm", searchTerm)])
 
     // Check if the searchTerm exists in the database - if it does, update the count
     if (result.documents.length > 0) {
@@ -24,8 +19,8 @@ export const updateSearchCount = async (searchTerm, movie) => {
       await database.updateDocument(DATABASE_ID, COLLECTION_ID, doc.$id, {
         count: doc.count + 1
       })
-      
-    // if it doesn't, create a new record and set the count to 1
+
+      // if it doesn't, create a new record and set the count to 1
     } else {
       await database.createDocument(DATABASE_ID, COLLECTION_ID, ID.unique(), {
         searchTerm,
@@ -33,7 +28,6 @@ export const updateSearchCount = async (searchTerm, movie) => {
         imageUrl: movie.Poster
       })
     }
-
   } catch (error) {
     console.error(error)
   }
@@ -41,13 +35,23 @@ export const updateSearchCount = async (searchTerm, movie) => {
 
 export const getTrendingMovies = async () => {
   try {
-    const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [
-      Query.limit(10),
-      Query.orderDesc('count')
-    ])
+    const result = await database.listDocuments(DATABASE_ID, COLLECTION_ID, [Query.limit(10), Query.orderDesc("count")])
     return result.documents
-
   } catch (error) {
     console.error(error)
+    throw error
+  }
+}
+
+export const fetchTrendingMovies = async () => {
+  try {
+    const results = await getTrendingMovies()
+    if (results.length > 0) {
+      return results
+    }
+    return []
+  } catch (error) {
+    console.error(error)
+    throw new Error("Failed to fetch trending movies")
   }
 }
