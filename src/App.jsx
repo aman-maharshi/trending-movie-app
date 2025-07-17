@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
-import Search from './components/Search'
-import Spinner from './components/Spinner'
-import { OMDB_BASE_URL } from './utils/api-constants'
-import Movie from './components/Movie'
+import React, { useState, useEffect } from "react"
+import Search from "./components/Search"
+import Spinner from "./components/Spinner"
+import { OMDB_BASE_URL } from "./utils/api-constants"
+import Movie from "./components/Movie"
 import { useDebounce } from "react-use"
-import { getTrendingMovies, updateSearchCount } from './appwrite'
-import { AllMovieLoader, TrendingMovieLoader } from './components/Loader'
+import { getTrendingMovies, updateSearchCount } from "./appwrite"
+import { AllMovieLoader, TrendingMovieLoader } from "./components/Loader"
 
 const App = () => {
   const [searchText, setSearchText] = useState("")
@@ -14,9 +14,13 @@ const App = () => {
   const [loading, setLoading] = useState(false)
   const [movies, setMovies] = useState([])
 
-  useDebounce(() => {
-    setDebouncedSearchText(searchText)
-  }, 700, [searchText])
+  useDebounce(
+    () => {
+      setDebouncedSearchText(searchText)
+    },
+    700,
+    [searchText]
+  )
 
   useEffect(() => {
     getData(debouncedSearchText)
@@ -24,14 +28,35 @@ const App = () => {
 
   const getRandomWord = () => {
     const movieTitleWords = [
-      "big", "dark", "good", "bad", "great", "little", "new", "dead", "beautiful",
-      "man", "woman", "love", "life", "world", "night", "day", "war", "home",
-      "king", "girl", "boy", "city", "heart", "story"
+      "big",
+      "dark",
+      "good",
+      "bad",
+      "great",
+      "little",
+      "new",
+      "dead",
+      "beautiful",
+      "man",
+      "woman",
+      "love",
+      "life",
+      "world",
+      "night",
+      "day",
+      "war",
+      "home",
+      "king",
+      "girl",
+      "boy",
+      "city",
+      "heart",
+      "story"
     ]
     return movieTitleWords[Math.floor(Math.random() * movieTitleWords.length)]
   }
 
-  const getData = async (text) => {
+  const getData = async text => {
     setLoading(true)
     const query = text || getRandomWord()
     try {
@@ -94,13 +119,11 @@ const App = () => {
 
       <div className="wrapper">
         <header>
-          {/* <img src="./hero.png" alt="Hero Banner" /> */}
-          <h1>Find <span className="text-gradient">Movies & TV Shows</span> You'll Enjoy Without the Hassle</h1>
+          <h1>
+            Find <span className="text-gradient">Movies & TV Shows</span> You'll Enjoy Without the Hassle
+          </h1>
 
-          <Search
-            searchText={searchText}
-            setSearchText={setSearchText}
-          />
+          <Search searchText={searchText} setSearchText={setSearchText} />
         </header>
 
         {debouncedSearchText === "" && (
@@ -133,7 +156,9 @@ const App = () => {
             <p className="text-red-500">{errorMessage}</p>
           ) : (
             <ul>
-              {movies.map((movie, index) => <Movie key={index} data={movie} />)}
+              {movies.map((movie, index) => (
+                <Movie key={index} data={movie} />
+              ))}
             </ul>
           )}
         </section>
@@ -143,10 +168,3 @@ const App = () => {
 }
 
 export default App
-
-/*
- TODO:
- - Add User Search Query to URL
- - Single Movie Page
- - Paginated Results
- */
