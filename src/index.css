@@ -77,24 +77,44 @@
     }
   }
 
-  .search {
-    @apply w-full bg-[#020014] sm:bg-light-100/5 px-4 py-3 rounded-lg mt-10 max-w-3xl mx-auto;
+  .search-container {
+    @apply w-full mt-10 max-w-3xl mx-auto;
+  }
 
-    & div {
-      @apply relative flex items-center;
-    }
+  .search-wrapper {
+    @apply relative flex items-center bg-gradient-to-r from-[#0f0d23] to-[#1a1a2e] border border-light-100/20 rounded-2xl px-6 py-4 shadow-lg shadow-light-100/5 backdrop-blur-sm transition-all duration-300 hover:border-light-100/30 hover:shadow-light-100/10 focus-within:border-light-100/50 focus-within:shadow-light-100/20;
+  }
 
-    & img {
-      @apply absolute left-2 h-5 w-5;
-    }
+  .search-icon {
+    @apply flex items-center justify-center mr-4;
+  }
 
-    & input {
-      @apply w-full bg-transparent py-2 sm:pr-10 pl-10 text-base text-gray-200 placeholder-light-200 outline-hidden;
-    }
+  .search-icon img {
+    @apply h-5 w-5 opacity-70;
+  }
 
-    & .clear-btn {
-      @apply absolute right-2 h-6 w-6 flex items-center justify-center text-gray-400 hover:text-white text-xl font-bold rounded-full hover:bg-gray-700/50 transition-all duration-200;
-    }
+  .search-input {
+    @apply flex-1 bg-transparent text-white placeholder-light-200/70 text-base font-medium outline-none border-none;
+  }
+
+  .search-input::placeholder {
+    @apply transition-opacity duration-200;
+  }
+
+  .search-input:focus::placeholder {
+    @apply opacity-50;
+  }
+
+  .clear-button {
+    @apply flex items-center justify-center h-8 w-8 rounded-full text-light-200/70 hover:text-white hover:bg-light-100/10 transition-all duration-200 ml-3;
+  }
+
+  .clear-button svg {
+    @apply transition-transform duration-200;
+  }
+
+  .clear-button:hover svg {
+    @apply scale-110;
   }
 
   .all-movies {
