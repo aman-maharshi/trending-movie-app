@@ -91,6 +91,10 @@
     & input {
       @apply w-full bg-transparent py-2 sm:pr-10 pl-10 text-base text-gray-200 placeholder-light-200 outline-hidden;
     }
+
+    & .clear-btn {
+      @apply absolute right-2 h-6 w-6 flex items-center justify-center text-gray-400 hover:text-white text-xl font-bold rounded-full hover:bg-gray-700/50 transition-all duration-200;
+    }
   }
 
   .all-movies {
