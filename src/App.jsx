@@ -13,6 +13,9 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState("")
   const [loading, setLoading] = useState(false)
   const [movies, setMovies] = useState([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [hasMore, setHasMore] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
 
   useDebounce(
     () => {
@@ -23,20 +26,36 @@ const App = () => {
   )
 
   useEffect(() => {
-    getData(debouncedSearchText)
+    setCurrentPage(1)
+    getData(debouncedSearchText, 1)
   }, [debouncedSearchText])
 
-  const getData = async text => {
-    setLoading(true)
+  const getData = async (text, page = 1) => {
+    if (page === 1) {
+      setLoading(true)
+    } else {
+      setLoadingMore(true)
+    }
+
     try {
-      const movieData = await fetchMovies(text)
+      const movieData = await fetchMovies(text, page)
       setErrorMessage("")
-      setMovies(movieData)
+
+      if (page === 1) {
+        setMovies(movieData.movies)
+      } else {
+        setMovies(prev => [...prev, ...movieData.movies])
+      }
+
+      setHasMore(movieData.hasMore)
     } catch (error) {
       setErrorMessage(error.message)
-      setMovies([])
+      if (page === 1) {
+        setMovies([])
+      }
     } finally {
       setLoading(false)
+      setLoadingMore(false)
     }
   }
 
@@ -62,6 +81,12 @@ const App = () => {
     } finally {
       setLoadingTrendingMovies(false)
     }
+  }
+
+  const loadMoreMovies = async () => {
+    const nextPage = currentPage + 1
+    setCurrentPage(nextPage)
+    await getData(debouncedSearchText, nextPage)
   }
 
   return (
@@ -106,11 +131,21 @@ const App = () => {
           ) : errorMessage ? (
             <p className="text-red-500">{errorMessage}</p>
           ) : (
-            <ul>
-              {movies.map((movie, index) => (
-                <Movie key={index} data={movie} />
-              ))}
-            </ul>
+            <>
+              <ul>
+                {movies.map((movie, index) => (
+                  <Movie key={index} data={movie} />
+                ))}
+              </ul>
+
+              {hasMore && movies.length > 0 && (
+                <div className="load-more-container">
+                  <button onClick={loadMoreMovies} disabled={loadingMore} className="load-more-btn">
+                    {loadingMore ? "Loading..." : "Load More Movies"}
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </section>
       </div>

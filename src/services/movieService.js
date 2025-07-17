@@ -31,11 +31,11 @@ const getRandomWord = () => {
   return movieTitleWords[Math.floor(Math.random() * movieTitleWords.length)]
 }
 
-export const fetchMovies = async searchText => {
+export const fetchMovies = async (searchText, page = 1) => {
   const query = searchText || getRandomWord()
 
   try {
-    const response = await fetch(`${OMDB_BASE_URL}&s=${query}&page=1`)
+    const response = await fetch(`${OMDB_BASE_URL}&s=${query}&page=${page}`)
     if (response.ok) {
       const data = await response.json()
       if (data.Response === "False") {
@@ -47,7 +47,11 @@ export const fetchMovies = async searchText => {
         await updateSearchCount(searchText, data.Search[0])
       }
 
-      return data.Search
+      return {
+        movies: data.Search,
+        totalResults: data.totalResults,
+        hasMore: data.Search && data.Search.length > 0
+      }
     } else {
       throw new Error("Error fetching movies. Please try again later.")
     }
